@@ -1,0 +1,203 @@
+*IniParser.txt*
+
+File: doc/IniParser.txt
+Version: 0.2.2
+Author: H Xu(xuhdev AT gmail DOT com)
+Last Change: 16 October, 2011
+Description: This plugin provides a function for parsing ini files.
+License: You can redistribute this plugin and/or modify it under the terms 
+         of the GNU General Public License as published by the Free Software 
+         Foundation; either version 2, or any later version. 
+
+CONTENTS~
+                                            *IniParser-contents*
+----------------------------------------------------------------------------
+1. Overview                                 |IniParser-overview|
+2. Functions                                |IniParser-functions|
+3. Installation                             |IniParser-installation|
+
+
+OVERVIEW~
+                                            *IniParser-overview*
+----------------------------------------------------------------------------
+IniParser provides a function for parsing ini files. The following is a short
+example of how to use this function.
+
+Assuming you have an ini file in the current directory, whose name is
+"planets.ini" with the following content:
+=======================
+[Venus]
+mass=4.86900e24 kg
+radius=6051.8 km
+satellites=0
+
+[Earth]
+mass=5.9742e24 kg
+radius=6378.1 km
+satellites=1
+
+[Mars]
+radius=3397 km
+mass=0.64191e24 kg
+satellites=2
+=======================
+
+Now we want to know the mass of Mars and the radius of the Earth by vimscript.
+First we need to parse the file by calling IniParser#Read:
+>
+ let ini_result = IniParser#Read('./planets.ini')
+<
+
+Then the following two lines shows the mass of Mars and the radius of the
+Earth respectively:
+>
+ echo ini_result['Mars']['mass']
+ echo ini_result['Earth']['radius']
+<
+
+Here's a little explanation:
+The information of the ini file would be stored in the variable "ini_result".
+"ini_result" is a dictionary, whose key names are the group names and whose
+values are also dictionaries whose key names are entry names and whose values
+are the values of the corresponding keys. If you don't understand it, don't
+worry, use the following line to show it:
+>
+ echo ini_result
+<
+
+Here's the result:
+>
+ {'Earth': {'mass': '5.9742e24 kg', 'radius': '6378.1 km', 'satellites': '1'}, 'Venus': {'mass': '4.86900e24 kg', 'radius': '6051.8 km', 'satellites': '0'}, 'Mars': {'mass': '0.64191e24 kg', 'radius': '3397 km', 'satellites': '2'}}
+<
+
+If you're familiar with the dictionary of vimscript, you should understand
+now.
+
+FUNCTIONS~
+                                            *IniParser-functions*
+----------------------------------------------------------------------------
+                                            *IniParser#Read*
+>
+ IniParser#Read(arg)
+<
+Parse an ini file and returns a dictionary which stores the parsing result of
+the ini file.
+
+Parameters:
+arg: Could be either a string or a list of string. If the parameter is a
+string, the string should be the name of the ini file; if the parameter is a
+list of string, it should be a list containing the content of the ini file
+which is to be parsed, which is something similar to the return value of
+|readfile|.
+
+Return Value:
+If no error occurs, the return value is a dictionary which stores the result
+of the parsing result. The dictionary's key names are the group names and its
+values are also dictionaries, which stores the key-value pairs in the ini
+file. For example, the following ini file:
+=======================
+[Venus]
+mass=4.86900e24 kg
+radius=6051.8 km
+satellites=0
+
+[Earth]
+mass=5.9742e24 kg
+radius=6378.1 km
+satellites=1
+
+[Mars]
+radius=3397 km
+mass=0.64191e24 kg
+satellites=2
+=======================
+
+The parsing of this file would lead to a result like this:
+>
+ {'Earth': {'mass': '5.9742e24 kg', 'radius': '6378.1 km', 'satellites': '1'}, 'Venus': {'mass': '4.86900e24 kg', 'radius': '6051.8 km', 'satellites': '0'}, 'Mars': {'mass': '0.64191e24 kg', 'radius': '3397 km', 'satellites': '2'}}
+<
+Or we could see it in another way:
+>
+ 'Earth'
+ -- 'mass'
+    -- '5.9742e24 kg'
+ -- 'radius'
+    -- '6378.1 km'
+ -- 'satellites'
+    -- '1'
+
+ 'Venus'
+ -- 'mass'
+    -- '4.86900e24 kg'
+ -- 'radius'
+    -- '6051.8 km'
+ -- 'satellites'
+    -- '0'
+
+ 'Mars'
+ -- 'mass'
+    -- '0.64191e24 kg'
+ -- 'radius'
+    -- '3397 km'
+ -- 'satellites'
+    -- '2'
+<
+Now you may find that this structure is very familiar to the original ini
+file. Also see |IniParser-overview|.
+
+But if there is some error occuring, the result would be a number which
+indicates what error it is. Here is the error number list:
+
+0-------The ini file contains a syntax error;
+1-------The ini file is not readable;
+2-------The argument type is neither a string nor a list.
+
+                                            *IniParser#Write*
+>
+ IniParser#Write(ini_dict [, filename])
+<
+Write to a list or a file as ini format whose content is indicated by a dict.
+The form of the dict is the same as the return value of |IniParser#Read|.
+
+Parameters:
+ini_dict: A dict containing the ini file structure. The form is the same as
+the return value of |IniParser#Read|. 
+
+filename: An optional parameter which is a string of file name which is
+supposed to be written to. If this parameter is not provided, the function
+will not write any file.
+
+Return Value:
+If secceed, returns the content of the ini file to be written in a list, which
+shares the same form with the return value of |writefile()|. Otherwise, the
+return value should be a number which indicates what error has happened. Here
+is the list of all possible error codes:
+
+1-------The parameter "ini_dict" is not given as a dict but another type;
+2-------Fail to write to the file whose file name is "filename" given by the
+        second parameter.
+
+                                            *IniParser#GetVersion*
+>
+ IniParser#GetVersion()
+<
+Get the version number of the plugin.
+
+Parameters:
+None.
+
+Return Value:
+The version number times 100. For example, it returns 10 on version 0.1, and
+returns 230 on version 2.3 (there's no version 2.3 yet, it's only used to
+illustrate).
+
+INSTALLATION~
+                                            *IniParser-installation*
+----------------------------------------------------------------------------
+Download the IniParser.zip file and extract it to your vim runtime
+directory(~/.vim on linux and $VIM_INSTALLATION_FOLDER\vimfiles on windows),
+you'd better then use helptags command to generate the help tag(for example
+use ":helptags ~/.vim/doc" on Linux).
+
+
+vim:ts=4:ft=help:tw=78
