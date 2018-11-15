@@ -4,17 +4,16 @@ let s:so_save = &so | let s:siso_save = &siso | set so=0 siso=0
 let v:this_session=expand("<sfile>:p")
 silent only
 silent tabonly
-cd ~/Documents/deus/workspace/T-Platform
+cd ~/Documents/deus/workspace/incubator
 if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +239 Legacy/src/customers/fucino/scoring/fucino_scoring.py
-badd +1 Legacy/src/customers/fucino/scoring/__init__.py
-badd +1 Legacy/src/customers/fucino/scoring/scoring_data.py
+badd +22 dt-back_office-environment/Makefile
+badd +8 ~/.tconf.mk
 argglobal
 silent! argdel *
-edit Legacy/src/customers/fucino/scoring/scoring_data.py
+edit dt-back_office-environment/Makefile
 set splitbelow splitright
 wincmd t
 set winminheight=0
@@ -31,11 +30,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 6 - ((5 * winheight(0) + 26) / 53)
+let s:l = 25 - ((24 * winheight(0) + 30) / 60)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-6
+25
 normal! 0
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
